@@ -17,23 +17,16 @@
 \begin{document}
 
 \sloppy
-\pagestyle{fancy}
-\lhead{\rightmark}
-\rhead{\leftmark}
-\cfoot{\thepage}
-\headsep = 1.5cm
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
+
 \newcommand{\ttt}{$T^3\:$}
 
 \title{\ttt - Twórca Tablic Tęczowych}
 \author{Bartosz Pieńkowski, Barnaba Turek}
 \maketitle
 \section{Opis}
-\ttt to zestaw dwóch równoległych programów: jednego wyznaczającego tzw. \emph{tablice tęczowe}, i~drugiego wyszukującego w~tych tablicach.
-Program zostanie wykonany w~języku Scala na platformę \textbf{JVM}.
+\ttt to zestaw jednego programów wyznaczających tablice tęczowe i~pozwalających sprawdzić poprawność ich wyznaczenia (przez wyznaczenie funkcji skrótu dla danego ciągu znaków (dalej klucza) i~próbę odwrócenia tego procesu).
 
-\emph{Tablice tęczowe} to sposób przechowywania danych pozwalających odwracać (analitycznie nieodwracalną) funkcję skrótu\footnote{inaczej kryptograficzną funkcję mieszającą, ang. \emph{hash function}}.
+\emph{Tablice tęczowe} to sposób przechowywania wcześniej obliczonych danych pozwalających odwracać (analitycznie nieodwracalną) funkcję skrótu\footnote{inaczej kryptograficzną funkcję mieszającą, ang. \emph{hash function}}.
 \emph{Tablice tęczowe} pozwalają zmniejszyć wymagania dyskowe (w~stosunku do prostego zapisywania wszystkich par klucz\dywiz f(klucz)) kosztem wymagań obliczeniowych.
 Osiągane to jest za pomocą tworzenia tzw. łańcuchów skrótów\footnote{ang. \emph{hash chaining}} i~zapisywaniu tylko pierwszego i~ostatniego elementu łańcucha.
 
@@ -86,5 +79,17 @@ Jeżeli program został wywołany z~katalogu, w~którym nie ma wygenerowanych ta
 Jeżeli program nie znajdzie klucza pasującego do zadanej wartości funkcji skrótu, program zakończy działanie wypisując informację o~niepowodzeniu.
 
 Jeżeli działanie programu zakończy się sukcesem, program wypisze znaleziony klucz. Poprawność znalezionego klucza będzie można sprawdzić korzystając z~programu \emph{t3-hash}.
+
+\section{Rozwiązania}
+Program zostanie wykonany w~języku \textbf{Scala} na platformę \textbf{JVM}.
+
+Programy \emph{t3-hash} i~\emph{t3-reverse} nie będą działać współbieżnie - programy te służą głównie do sprawdzania poprawności wygenerowanych tablic i~są znacząco mniej wymagające obliczeniowo.
+
+Zrównoleglenie wyznaczania tablic tęczowych zostanie osiągnięte za pomocą mechanizmu Aktorów oferowanego przez język \textbf{Scala}.
+Mechanizm ten jest zrealizowany na wirtualnej maszynie Javy za pomocą wątków.
+
+Zamierzamy wykorzystać komunikację globalną - jeden wątek będzie zarządzał wszystkimi innymi wątkami.
+
+Naszym zdaniem najlepszą dekompozycją problemu przy tak postawionym zadaniu będzie dekompozycja domenowa, tj. równomierny podział początkowych\footnote{zaczynających łańcuch skrótów} kluczy na wątki.
 
 \end{document}
