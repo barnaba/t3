@@ -1,0 +1,90 @@
+\documentclass{article}
+
+\usepackage{mdwlist}
+\usepackage[scaled]{helvet}
+\usepackage{fullpage}
+\usepackage{polski}
+\usepackage[utf8x]{inputenc}
+\usepackage{color}
+\usepackage{mathtools}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage[unicode=true]{hyperref}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{listings}
+
+\begin{document}
+
+\sloppy
+\pagestyle{fancy}
+\lhead{\rightmark}
+\rhead{\leftmark}
+\cfoot{\thepage}
+\headsep = 1.5cm
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\newcommand{\ttt}{$T^3\:$}
+
+\title{\ttt - Twórca Tablic Tęczowych}
+\author{Bartosz Pieńkowski, Barnaba Turek}
+\maketitle
+\section{Opis}
+\ttt to zestaw dwóch równoległych programów: jednego wyznaczającego tzw. \emph{tablice tęczowe}, i~drugiego wyszukującego w~tych tablicach.
+Program zostanie wykonany w~języku Scala na platformę \textbf{JVM}.
+
+\emph{Tablice tęczowe} to sposób przechowywania danych pozwalających odwracać (analitycznie nieodwracalną) funkcję skrótu\footnote{inaczej kryptograficzną funkcję mieszającą, ang. \emph{hash function}}.
+\emph{Tablice tęczowe} pozwalają zmniejszyć wymagania dyskowe (w~stosunku do prostego zapisywania wszystkich par klucz\dywiz f(klucz)) kosztem wymagań obliczeniowych.
+Osiągane to jest za pomocą tworzenia tzw. łańcuchów skrótów\footnote{ang. \emph{hash chaining}} i~zapisywaniu tylko pierwszego i~ostatniego elementu łańcucha.
+
+\subsection{Funkcja skrótu}
+\ttt wyznacza \emph{tablice tęczowe} dla funkcji skrótu zgodnej z~funkcją crypt (należącą do standardu \textbf{POSIX}) działającej w~oparciu o~standard \textbf{DES}.
+
+\section{Użycie}
+\subsection{Tworzenie tablic tęczowych}
+Program generujący tablice tęczowe nazywa się \emph{t3}.
+
+\subsubsection{Wywołanie programu}
+Użytkownik programu t3 podaje trzy argumenty linii poleceń. Pierwszy argument określa długość klucza, dla którego mają być wygenerowane \emph{tablice tęczowe} (od 1 do 8).
+Drugi argument określa długość obliczanych łańcuchów.
+Trzeci argument jest opcjonalny i~określa alfabet użyty do generowania kluczy. Domyślnie alfabet to małe litery.
+
+\subsubsection{Wyjście programu}
+Tablice tęczowe zostaną zapisane w~aktualnym katalogu.
+Program tworzy plik, składający się z~wierszy. Każdy wiersz składa się z~początkowego i~końcowego elementu łańcucha skrótów, oddzielnoych spacją.
+
+\subsubsection{Przykładowe wywołania}
+Wywołanie:
+\begin{lstlisting}
+  $ t3 2 10 abc
+\end{lstlisting}
+Wygeneruje tablice tęczowe dla haseł o~dłguości dwóch znaków z~alfabetu abc. Łańcuchy skrótów będą miały długość 10.
+
+Aby uprościć podawanie alfabetu można wykorzystać inne, dostępne w~systemie narzędzia. Np. w~systemie linux można wykorzystać program \textbf{perl} w~następujący sposób:
+\begin{lstlisting}
+  $ t3 2 10 `perl -e 'print join ``, a..z,A..Z,0..9'`
+\end{lstlisting}
+Wywołanie takie jest równoważne wywołaniu:
+\begin{lstlisting}
+  $ t3 2 10 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+\end{lstlisting}
+i~generuje tablice tęczowe dla dwuznakowych haseł składających się z~kombinacji wielkich liter, małych liter i~cyfr.
+\subsection{generowanie skrótu}
+Do generowania i~skrótów służy program \emph{t3-hash}.
+\subsubsection{Wywołanie programu}
+Użytkownik programu \emph{t3-hash} jako argument podaje klucz (1 do 8 znaków), dla którego ma być wygenerowany skrót.
+Następnie program wypisuje skrót na standardowe wyjście.
+
+
+\subsection{odwracanie funkcji skrótu}
+Do odwracania funkcji skrótu służy program \emph{t3-reverse}.
+\subsubsection{Wywołanie programu}
+Użytkownik programu \emph{t3-reverse} jako argument podaje wartość funkcji skrótu, dla której znaleziona ma być wartość klucza.
+
+Jeżeli program został wywołany z~katalogu, w~którym nie ma wygenerowanych tablic tęczowych, program zakończy działanie wypisując informację o~braku tablic.
+
+Jeżeli program nie znajdzie klucza pasującego do zadanej wartości funkcji skrótu, program zakończy działanie wypisując informację o~niepowodzeniu.
+
+Jeżeli działanie programu zakończy się sukcesem, program wypisze znaleziony klucz. Poprawność znalezionego klucza będzie można sprawdzić korzystając z~programu \emph{t3-hash}.
+
+\end{document}
