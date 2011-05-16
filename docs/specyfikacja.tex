@@ -24,7 +24,7 @@
 \author{Bartosz Pieńkowski, Barnaba Turek}
 \maketitle
 \section{Opis}
-\ttt to zestaw jednego programów wyznaczających tablice tęczowe i~pozwalających sprawdzić poprawność ich wyznaczenia (przez wyznaczenie funkcji skrótu dla danego ciągu znaków (dalej klucza) i~próbę odwrócenia tego procesu).
+\ttt to zestaw programów wyznaczających tablice tęczowe i~pozwalających sprawdzić poprawność ich wyznaczenia (przez wyznaczenie funkcji skrótu dla danego ciągu znaków (dalej klucza) i~próbę odwrócenia tego procesu).
 
 \emph{Tablice tęczowe} to sposób przechowywania wcześniej obliczonych danych pozwalających odwracać (analitycznie nieodwracalną) funkcję skrótu\footnote{inaczej kryptograficzną funkcję mieszającą, ang. \emph{hash function}}.
 \emph{Tablice tęczowe} pozwalają zmniejszyć wymagania dyskowe (w~stosunku do prostego zapisywania wszystkich par klucz\dywiz f(klucz)) kosztem wymagań obliczeniowych.
@@ -53,7 +53,7 @@ Wywołanie:
 \end{lstlisting}
 Wygeneruje tablice tęczowe dla haseł o~dłguości dwóch znaków z~alfabetu abc. Łańcuchy skrótów będą miały długość 10.
 
-Aby uprościć podawanie alfabetu można wykorzystać inne, dostępne w~systemie narzędzia. Np. w~systemie linux można wykorzystać program \textbf{perl} w~następujący sposób:
+Aby uprościć podawanie alfabetu można wykorzystać inne, dostępne w~systemie narzędzia. Np. w~wielu powłokach systemu GNU/Linux można wykorzystać program \textbf{perl} w~następujący sposób:
 \begin{lstlisting}
   $ t3 2 10 `perl -e 'print join ``, a..z,A..Z,0..9'`
 \end{lstlisting}
@@ -62,14 +62,14 @@ Wywołanie takie jest równoważne wywołaniu:
   $ t3 2 10 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
 \end{lstlisting}
 i~generuje tablice tęczowe dla dwuznakowych haseł składających się z~kombinacji wielkich liter, małych liter i~cyfr.
-\subsection{generowanie skrótu}
+\subsection{Generowanie skrótu}
 Do generowania i~skrótów służy program \emph{t3-hash}.
 \subsubsection{Wywołanie programu}
 Użytkownik programu \emph{t3-hash} jako argument podaje klucz (1 do 8 znaków), dla którego ma być wygenerowany skrót.
 Następnie program wypisuje skrót na standardowe wyjście.
 
 
-\subsection{odwracanie funkcji skrótu}
+\subsection{Odwracanie funkcji skrótu}
 Do odwracania funkcji skrótu służy program \emph{t3-reverse}.
 \subsubsection{Wywołanie programu}
 Użytkownik programu \emph{t3-reverse} jako argument podaje wartość funkcji skrótu, dla której znaleziona ma być wartość klucza.
