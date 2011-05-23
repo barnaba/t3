@@ -40,7 +40,7 @@ frame=single,                   % adds a~frame around the code
 Osiągane to jest za pomocą tworzenia tzw. łańcuchów skrótów\footnote{ang. \emph{hash chaining}} i~zapisywaniu tylko pierwszego i~ostatniego elementu łańcucha.
 
 \subsection{Funkcja skrótu}
-\ttt wyznacza \emph{tablice tęczowe} dla funkcji skrótu zgodnej z~funkcją crypt (należącą do standardu \textbf{POSIX}) działającej w~oparciu o~standard \textbf{DES}.
+\ttt wyznacza \emph{tablice tęczowe} dla funkcji skrótu \textbf{md5}.
 
 \section{Użycie}
 \subsection{Tworzenie tablic tęczowych}
@@ -49,51 +49,47 @@ Program generujący tablice tęczowe nazywa się \emph{t3}.
 \subsubsection{Wywołanie programu}
 Użytkownik programu t3 podaje trzy argumenty linii poleceń. Pierwszy argument określa długość klucza, dla którego mają być wygenerowane \emph{tablice tęczowe} (od 1 do 8).
 Drugi argument określa długość obliczanych łańcuchów.
-Trzeci argument jest opcjonalny i~określa alfabet użyty do generowania kluczy. Domyślnie alfabet to małe litery.
+Trzeci argument określa plik, w~którym mają być zapisane klucze.
 
 \subsubsection{Wyjście programu}
-Tablice tęczowe zostaną zapisane w~aktualnym katalogu.
+Tablice tęczowe zostaną zapisane w~podanym pliku.
 Program tworzy plik, składający się z~wierszy. Każdy wiersz składa się z~początkowego i~końcowego elementu łańcucha skrótów, oddzielnoych spacją.
+Łańcuchy są uporządkowane wg. końcowego łańcucha, aby przyspieszyć wyszukiwanie.
+Na początku pliku znajduje się nagłówek określający długość łańcuchów, alfabet z~którego są zbudowane, długość kluczy i~wartości ostatniego łańcucha w~kluczowych elementach pliku (najczęściej wykorzystywane elementy przy stosowaniu przeszukiwania binarnego).
+W~nagłówku znajdują się 32\footnote{Wartość podlega negocjacji} elementy tablicy tęczowej, których szansa wykorzystania jest największa (czyli co $ \frac{n}{32} $ element, gdzie $n$ to liczba elementów w~tablicy).
+
+Taka konstrukcja nagłówka podyktowana jest chęcią przyspieszenia wyszukiwania.
+Na tradycyjnych dyskach twardych prędkość odczytu sekwencyjnego jest znacząco większa niż prędkość dowolnego dostępu.
+Jednocześnie bardzo prawdopodobne, że w~czasie wyszukiwania binarnego będziemy musieli skorzystać z~tych elementów.
 
 \subsubsection{Przykładowe wywołania}
 Wywołanie:
 \begin{lstlisting}
-  $ t3 2 10 abc
+  $ t3 2 10
 \end{lstlisting}
-Wygeneruje tablice tęczowe dla haseł o~dłguości dwóch znaków z~trzyliterowego alfabetu ``abc''. Łańcuchy skrótów będą miały długość 10.
+Wygeneruje tablice tęczowe dla haseł o~dłguości dwóch znaków. Łańcuchy skrótów będą miały długość 10.
 
-Aby uprościć podawanie alfabetu można wykorzystać inne, dostępne w~systemie narzędzia. Np. w~wielu powłokach systemu GNU/Linux można wykorzystać program \textbf{perl} w~następujący sposób:
-\begin{lstlisting}
-  $ t3 2 10 `perl -e 'print join ``, a..z,A..Z,0..9'`
-\end{lstlisting}
-Wywołanie takie jest równoważne wywołaniu:
-\begin{lstlisting}
-  $ t3 2 10 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-\end{lstlisting}
-i~generuje tablice tęczowe dla dwuznakowych haseł składających się z~kombinacji wielkich liter, małych liter i~cyfr.
-\subsection{Generowanie skrótu}
-Do generowania i~skrótów służy program \emph{t3-hash}.
+Do generowania skrótów służy program \emph{t3-hash}.
 \subsubsection{Wywołanie programu}
 Użytkownik programu \emph{t3-hash} jako argument podaje klucz (1 do 8 znaków), dla którego ma być wygenerowany skrót.
 Następnie program wypisuje skrót na standardowe wyjście.
-
 
 \subsection{Odwracanie funkcji skrótu}
 Do odwracania funkcji skrótu służy program \emph{t3-reverse}.
 \subsubsection{Wywołanie programu}
 Użytkownik programu \emph{t3-reverse} jako argument podaje wartość funkcji skrótu, dla której znaleziona ma być wartość klucza.
 
-Jeżeli program został wywołany z~katalogu, w~którym nie ma wygenerowanych tablic tęczowych, program zakończy działanie wypisując informację o~braku tablic.
+Jako drugi argument należy podać ścieżkę do pliku z~tablicami tęczowymi wygenerowanymi przez \ttt.
 
 Jeżeli program nie znajdzie klucza pasującego do zadanej wartości funkcji skrótu, program zakończy działanie wypisując informację o~niepowodzeniu.
 
 Jeżeli działanie programu zakończy się sukcesem, program wypisze znaleziony klucz. Poprawność znalezionego klucza będzie można sprawdzić korzystając z~programu \emph{t3-hash}.
 
-\section{Rozwiązania}
+\section{Implementacja}
+\subsection{Rozwiązania}
 Program zostanie wykonany w~języku \textbf{Scala} na platformę \textbf{JVM}.
 
-Programy \emph{t3-hash} i~\emph{t3-reverse} nie będą działać współbieżnie - programy te służą głównie do sprawdzania poprawności wygenerowanych tablic i~są znacząco mniej wymagające obliczeniowo.
-
+\subsubsection{Generowanie tablic}
 Zrównoleglenie wyznaczania tablic tęczowych zostanie osiągnięte za pomocą mechanizmu Aktorów oferowanego przez język \textbf{Scala}.
 Mechanizm ten jest zrealizowany na wirtualnej maszynie Javy za pomocą wątków.
 
@@ -101,4 +97,27 @@ Zamierzamy wykorzystać komunikację globalną - jeden wątek będzie zarządza�
 
 Naszym zdaniem najlepszą dekompozycją problemu przy tak postawionym zadaniu będzie dekompozycja domenowa, tj. równomierny podział początkowych\footnote{zaczynających łańcuch skrótów} kluczy na wątki.
 
+Klucze będą dzielone na paczki o~określonym, stałym rozmiarze. Na początku aktor zarządzający procesem wyśle wiadomość do każdego aktora\dywiz wykonawcy.
+Wiadomość będzie zawierała informacje o~początkowych kluczach, dla których mają zostać wygenerowane łańcuchy.
+Wykonawcy po obliczeniu wszystkich kluczy, których obliczenie zostało im zlecone, wyślą do zarządcy wiadomość zawierającą nazwę pliku tymczasowego, w~którym zapisali posortowane łańcuchy.
+Zarządca doda nazwę pliku do kolejki (FIFO) plików, które muszą zostać połączone.
+
+Następnie, kiedy cały zadany zakres kluczy zostanie już znaleziony, zostaną utworzeni nowi aktorzy, odpowiedzialni za scalanie plików.
+Zarządca wyśle do każdego z~nich wiadomość zawierającą nazwy dwóch pierwszych plików z~kolejki, które należy scalić.
+Ponieważ dane w~plikach są posortowane, scalanie będzie się odbywać na zasadzie podobnej do scalania w~algorytmie merge-sort.
+Po skończeniu scalania dwóch plików, aktor zapisze scalone dane do trzeciego pliku, usunie dwa pliki wejściowe i~prześle zarządcy wiadomość zawierającą nazwę nowego pliku.
+Zarządca odbierze wiadomość i~doda plik do kolejki plików wymagających scalenia.
+
+Kiedy w~kolejce zostanie tylko jeden plik, zarządca doda do pliku niezbędne nagłówki i~program zakończy działanie.
+
+\subsubsection{Wyszukiwanie}
+Program wyszukujący nie będzie podlegał zrównolegleniu, ponieważ jego szybkość będzie w~znacznej mierze ograniczona przez prędkość dowolnego dostępu do dysku.
+
+Na początku program wczyta nagłówek tablicy i~ustawi odpowiednie wartości długości kluczy, do których były przeprowadzane redukcje, długości łańcuchów i~alfabetu.
+Program wczyta z~nagłówka kluczowe wartości przyspieszające wyszukiwanie do specjalnej struktury (działającej na zasadzie \emph{cache}).
+Program będzie obliczał coraz dłuższe łańcuchy na podstawie klucza(zaczynając od łańcucha jednoelementowego) i~próbował znaleźć łańcuch o~takim samym zakończeniu co obliczone w~tablicach.
+
+Jeżeli wyszukiwanie się nie powiedzie, program wygeneruje dłuższy łańcuch (chyba, że przekroczona zostanie długość łańcucha, dla którego generowana była tablica tęczowa - jeśli tak, program zakończy się niepowodzeniem).
+
+Jeżeli łańcuch znajdujący się w~tablicy zostanie dopasowany do obliczonego łańcucha długości $n$, program wczyta pierwszy element łańcucha i~wygeneruje na jego podstawie łańcuch o~długości $n-m$ (gdzie m to długość łańcuchów, dla których wygenerowana była tablica). Ostatni element tego łańcucha, to szukany klucz.
 \end{document}
