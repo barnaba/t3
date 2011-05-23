@@ -55,12 +55,7 @@ Trzeci argument określa plik, w~którym mają być zapisane klucze.
 Tablice tęczowe zostaną zapisane w~podanym pliku.
 Program tworzy plik, składający się z~wierszy. Każdy wiersz składa się z~początkowego i~końcowego elementu łańcucha skrótów, oddzielnoych spacją.
 Łańcuchy są uporządkowane wg. końcowego łańcucha, aby przyspieszyć wyszukiwanie.
-Na początku pliku znajduje się nagłówek określający długość łańcuchów, alfabet z~którego są zbudowane, długość kluczy i~wartości ostatniego łańcucha w~kluczowych elementach pliku (najczęściej wykorzystywane elementy przy stosowaniu przeszukiwania binarnego).
-W~nagłówku znajdują się 32\footnote{Wartość podlega negocjacji} elementy tablicy tęczowej, których szansa wykorzystania jest największa (czyli co $ \frac{n}{32} $ element, gdzie $n$ to liczba elementów w~tablicy).
-
-Taka konstrukcja nagłówka podyktowana jest chęcią przyspieszenia wyszukiwania.
-Na tradycyjnych dyskach twardych prędkość odczytu sekwencyjnego jest znacząco większa niż prędkość dowolnego dostępu.
-Jednocześnie bardzo prawdopodobne, że w~czasie wyszukiwania binarnego będziemy musieli skorzystać z~tych elementów.
+Na początku pliku znajduje się nagłówek określający długość łańcuchów, alfabet z~którego są zbudowane i~długość kluczy.
 
 \subsubsection{Przykładowe wywołania}
 Wywołanie:
@@ -114,7 +109,6 @@ Kiedy w~kolejce zostanie tylko jeden plik, zarządca doda do pliku niezbędne na
 Program wyszukujący nie będzie podlegał zrównolegleniu, ponieważ jego szybkość będzie w~znacznej mierze ograniczona przez prędkość dowolnego dostępu do dysku.
 
 Na początku program wczyta nagłówek tablicy i~ustawi odpowiednie wartości długości kluczy, do których były przeprowadzane redukcje, długości łańcuchów i~alfabetu.
-Program wczyta z~nagłówka kluczowe wartości przyspieszające wyszukiwanie do specjalnej struktury (działającej na zasadzie \emph{cache}).
 Program będzie obliczał coraz dłuższe łańcuchy na podstawie klucza(zaczynając od łańcucha jednoelementowego) i~próbował znaleźć łańcuch o~takim samym zakończeniu co obliczone w~tablicach.
 
 Jeżeli wyszukiwanie się nie powiedzie, program wygeneruje dłuższy łańcuch (chyba, że przekroczona zostanie długość łańcucha, dla którego generowana była tablica tęczowa - jeśli tak, program zakończy się niepowodzeniem).
