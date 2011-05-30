@@ -92,7 +92,7 @@ Możemy to zapisać jako 4 zmienne typu int.
 
 \begin{lstlisting}
     for (int i=0; i<4; i++){
-      hash[i] = getInt(MD5Bytes.slice(i*4,(i+1)*));
+      hash[i] = getInt(MD5Bytes.slice(i*4,(i+1)*4));
       hash[i] = idx ^ (redux_number << (i*4));
     }
 \end{lstlisting}
