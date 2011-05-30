@@ -1,7 +1,6 @@
 \documentclass[a4paper]{scrartcl}
 \pagestyle{headings}
 \usepackage{mdwlist}
-\usepackage[scaled]{helvet}
 \usepackage{polski}
 \usepackage[utf8x]{inputenc}
 \usepackage{color}
@@ -80,9 +79,56 @@ Jeżeli program nie znajdzie klucza pasującego do zadanej wartości funkcji skr
 
 Jeżeli działanie programu zakończy się sukcesem, program wypisze znaleziony klucz. Poprawność znalezionego klucza będzie można sprawdzić korzystając z~programu \emph{t3-hash}.
 
+\subsubsection{pokrycie zbioru kluczy}
+\includegraphics[width=\textwidth]{pokrycie.png}
+
 \section{Implementacja}
 \subsection{Rozwiązania}
-Program zostanie wykonany w~języku \textbf{Scala} na platformę \textbf{JVM}.
+%Program zostanie wykonany w~języku \textbf{Scala} na platformę \textbf{JVM}.
+
+\subsubsection{Redukcja}
+Wynik funkcji MD5 to 16 bajtów.
+Możemy to zapisać jako 4 zmienne typu int.
+
+\begin{lstlisting}
+    for (int i=0; i<4; i++){
+      hash[i] = getInt(MD5Bytes.slice(i*4,(i+1)*));
+      hash[i] = idx ^ (redux_number << (i*4));
+    }
+\end{lstlisting}
+
+Następnie z~każdej zmiennej tworzymy cztery indeksy do tablicy reprezentującej alfabet.
+\newpage
+\emph{AlphaLen}\dywiz liczba elementów w~tablicy.
+
+\begin{lstlisting}
+  val pwd = Buffer[Int];
+  for (int i=0; i<4; i++){
+     pwd += (hash[i] % AlphaLen^2) / AlphaLen;
+     pwd += (hash[i] % AlphaLen^2) % AlphaLen;
+     pwd += ((hash[i] / AlphaLen^2) % AlphaLen^2) / AlphaLen;
+     pwd += ((hash[i] / AlphaLen^2) % AlphaLen^2) % AlphaLen;
+  }
+
+  //mieszanie w~celu zroznicowania kolejnych redukcji
+
+  if (redux_number > 16)
+    pwd = pwd.reverse();
+  
+  val slice = pwd.slice(0,redux_number%16);
+  pwd.trimStart(redux_number);
+
+  if (redux_number > 32)
+    pwd = pwd.reverse();
+  elseif (redux_number > 48)
+    slice = slice.reverse();
+
+  pwd += slice;
+\end{lstlisting}
+
+Następnie elementy pwd są mapowane na znaki ze słownika i~żądana liczba elementów z~początku bufora pwd jest zwracana jako nowy klucz.
+
+Tak zaplanowana funkcja redukcji powinna działać dośc dobrze dla alfabetów nie dłuższych niż 84 znaki.
 
 \subsubsection{Generowanie tablic}
 Zrównoleglenie wyznaczania tablic tęczowych zostanie osiągnięte za pomocą mechanizmu Aktorów oferowanego przez język \textbf{Scala}.
@@ -105,6 +151,14 @@ Zarządca odbierze wiadomość i~doda plik do kolejki plików wymagających scal
 
 Kiedy w~kolejce zostanie tylko jeden plik, zarządca doda do pliku niezbędne nagłówki i~program zakończy działanie.
 
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{t3.png}
+\end{center}
+\caption{diagram klas programu \ttt}
+\end{figure}
+
+
 \subsubsection{Wyszukiwanie}
 Program wyszukujący nie będzie podlegał zrównolegleniu, ponieważ jego szybkość będzie w~znacznej mierze ograniczona przez prędkość dowolnego dostępu do dysku.
 
@@ -114,4 +168,17 @@ Program będzie obliczał coraz dłuższe łańcuchy na podstawie klucza(zaczyna
 Jeżeli wyszukiwanie się nie powiedzie, program wygeneruje dłuższy łańcuch (chyba, że przekroczona zostanie długość łańcucha, dla którego generowana była tablica tęczowa - jeśli tak, program zakończy się niepowodzeniem).
 
 Jeżeli łańcuch znajdujący się w~tablicy zostanie dopasowany do obliczonego łańcucha długości $n$, program wczyta pierwszy element łańcucha i~wygeneruje na jego podstawie łańcuch o~długości $n-m$ (gdzie m to długość łańcuchów, dla których wygenerowana była tablica). Ostatni element tego łańcucha, to szukany klucz.
+\begin{figure}
+\begin{center}
+\includegraphics{t3-reverse.png}
+\end{center}
+\caption{diagram klas programu t3-reverse}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics{t3-hash.png}
+\end{center}
+\caption{diagram klas programu t3-hash}
+\end{figure}
 \end{document}
