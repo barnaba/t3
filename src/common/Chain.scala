@@ -1,5 +1,5 @@
 package common
 
-class Chain {
-
+class Chain(first: Key, last: Key) {
+	private var length: Int = _
 }
