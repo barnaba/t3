@@ -1,6 +1,5 @@
 package common
 
-trait ReduxFunction {
-	def redux(hash: Hash): Key
-	def setLevel(level: Int): Unit
+trait ReduxFunction{
+	def redux(input: Array[Byte], level: Int):Array[Byte]
 }
