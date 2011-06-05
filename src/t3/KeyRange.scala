@@ -1,13 +1,17 @@
 package t3
 import scala.math
 
-class KeyRange (alphabet:String, len:Int, range: Range) extends Iterator[String] {
+object KeyRange {
+  def apply(alphabet: String, len:Int, step:Int) : KeyRange = {
+    val last = math.pow(alphabet.length(), len).toInt
+    new KeyRange(alphabet, len, 0 to last by step)
+  }
+}
+
+class KeyRange(alphabet:String, len:Int, range: Range) extends Iterator[String] {
 
   var current : Int = 0;
   val alen : Int = alphabet.length()
-
-  def this(alphabet:String, len:Int, step:Int) = 
-    this(alphabet, len, 0 to math.pow(alphabet.length(), len).toInt by step)
 
   def next(): String = {
     val value = currentString(range(current), Nil)
