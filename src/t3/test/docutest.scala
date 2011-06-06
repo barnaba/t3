@@ -8,7 +8,7 @@ class DocuText extends FunSuite {
 
   test("hash generation produces existing file") {
 
-    val alphabet = "10"
+    val alphabet = "ab"
     val keyLength = 2
     val chainLength = 5
     val step = 1
@@ -24,7 +24,11 @@ class DocuText extends FunSuite {
   
     //this has to be done for every range - message from manager
     val factory = new t3.ChainFactory(range)
-    println(factory.filename)
+    val file = factory.filename
+
+    assert(file.exists())
+    assert(file.length === 16)
+    file.delete()
   }
   
 }
