@@ -15,7 +15,7 @@ class DocuText extends FunSuite {
     val range = t3.KeyRange(alphabet, keyLength, step);
     // this has to be done only once, possibly in main()
     {
-      //Chain companion object must be properly initialised with
+      //Chain companion object must be properly initialized with
       //HashFunction and ReduxFunction instances
       common.Chain.redux = new common.MD5Redux(alphabet, keyLength)
       common.Chain.hash = common.MD5Hash
