@@ -21,6 +21,8 @@ class KeyRange(alphabet:String, len:Int, range: Range) extends Iterator[String] 
 
   def hasNext: Boolean = current < range.length
 
+  override def length: Int = range.length
+
   def pop(howMany: Int): KeyRange = {
     val r = new KeyRange(alphabet, len, current to (current + howMany) by range.step)
     current+=howMany

@@ -6,9 +6,10 @@ object Chain {
   var length: Int = _
 }
 
-class Chain(first: Array[Byte]) {
+class Chain(first: Array[Byte]) extends Ordered[Chain]{
 
   val last = element(first,0)
+  val lastAsStr = last.map(_.toChar).mkString("")
 
   private def element(key:Array[Byte], n: Int) : Array[Byte] = {
       val hash = Chain.hash(key)
@@ -18,5 +19,11 @@ class Chain(first: Array[Byte]) {
     else
       return redux
   }
+
+  def compare(that: Chain) = {
+    lastAsStr compare that.lastAsStr
+  }
+
+  def compact() : Array[Byte] = first ++ last
 
 }
