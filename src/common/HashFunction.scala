@@ -1,5 +1,5 @@
 package common
 
 trait HashFunction {
-	def hash(input : Array[Byte]): Array[Byte]
+	def apply(input : Array[Byte]): Array[Byte]
 }
