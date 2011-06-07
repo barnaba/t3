@@ -24,6 +24,6 @@ class Chain(first: Array[Byte]) extends Ordered[Chain]{
     lastAsStr compare that.lastAsStr
   }
 
-  def compact() : Array[Byte] = first ++ last
+  def compact() : Array[Byte] = last ++ " ".getBytes ++ first ++ "\n".getBytes
 
 }
