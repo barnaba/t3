@@ -6,7 +6,7 @@ import org.scalatest.matchers.ShouldMatchers
 //this test documents generation and writing of hash chains and serves as a smoke test
 
 
-class DocuText extends FunSuite {
+class DocuTest extends FunSuite {
 
   test("hash generation produces existing file") {
 
@@ -14,7 +14,7 @@ class DocuText extends FunSuite {
     val keyLength = 2
     val chainLength = 5
     val step = 1
-    val range = t3.KeyRange(alphabet, keyLength, step);
+    val range = KeyRange(alphabet, keyLength, step);
     // this has to be done only once, possibly in main()
     {
       //Chain companion object must be properly initialized with
@@ -25,10 +25,12 @@ class DocuText extends FunSuite {
     }
   
     //this has to be done for every range - message from manager
-    val factory = new t3.ChainFactory(range)
+    val factory = new ChainFactory(range)
     println(factory.filename)
   }
   
 }
 
-
+object DocuTestRunner extends Application {
+    (new DocuTest).execute()
+}

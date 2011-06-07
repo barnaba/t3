@@ -2,7 +2,7 @@ package t3
 
 import org.scalatest.FunSuite
 
-class KeyRangeSuite extends FunSuite {
+class KeyRangeTest extends FunSuite {
 
   test("next method works") {
     val r = KeyRange("01", 4, 1)
@@ -29,3 +29,6 @@ class KeyRangeSuite extends FunSuite {
   
 }
 
+object KeyRangeTestRunner extends Application {
+    (new KeyRangeTest).execute()
+}
