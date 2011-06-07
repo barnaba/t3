@@ -10,7 +10,7 @@ class DocuTest extends FunSuite {
 
   test("hash generation produces existing file") {
 
-    val alphabet = "10"
+    val alphabet = "ab"
     val keyLength = 2
     val chainLength = 5
     val step = 1

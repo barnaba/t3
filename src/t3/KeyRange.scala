@@ -3,7 +3,7 @@ import scala.math
 
 object KeyRange {
   def apply(alphabet: String, len:Int, step:Int) : KeyRange = {
-    val last = math.pow(alphabet.length(), len).toInt
+    val last = math.pow(alphabet.length(), len).toInt - 1
     new KeyRange(alphabet, len, 0 to last by step)
   }
 }
