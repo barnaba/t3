@@ -1,5 +1,6 @@
+package t3
+
 import org.scalatest.FunSuite
-import t3.KeyRange
 
 class KeyRangeSuite extends FunSuite {
 

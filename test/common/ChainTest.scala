@@ -1,7 +1,6 @@
+package common
+
 import org.scalatest.FunSuite
-import common.MD5Hash
-import common.MD5Redux
-import common.Chain
 
 class commonSuite extends FunSuite {
 
