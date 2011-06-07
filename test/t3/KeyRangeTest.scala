@@ -24,7 +24,13 @@ class KeyRangeTest extends FunSuite {
     r.pop(10)
     val k = r.pop(10)
     // eleventh string
-    assert(k.next() == "1011")
+    assert(k.next() === "1011")
+  }
+
+  test("poped Range from empty range results in empty range") {
+    val r = KeyRange("01", 4, 1)
+    r.pop(9000)
+    assert(r.hasNext === false)
   }
   
 }

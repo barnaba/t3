@@ -24,8 +24,13 @@ class KeyRange(alphabet:String, len:Int, range: Range) extends Iterator[String] 
   override def length: Int = range.length
 
   def pop(howMany: Int): KeyRange = {
-    val r = new KeyRange(alphabet, len, current to (current + howMany) by range.step)
-    current+=howMany
+    val end = if ((current + howMany) > range.length){
+      range.length
+    } else {
+      howMany + current
+    }
+    val r = new KeyRange(alphabet, len, current to end by range.step)
+    current = end
     return r
   }
 

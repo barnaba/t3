@@ -26,10 +26,10 @@ class DocuTest extends FunSuite {
   
     //this has to be done for every range - message from manager
     val factory = new t3.ChainFactory(range)
-    val file = java.io.File(factory.filename)
+    val file = new java.io.File(factory.filename)
 
     assert(file.exists())
-    assert(file.length === 16)
+    assert(file.length === 24)
     file.delete()
   }
   
