@@ -4,7 +4,7 @@ import scala.actors.Actor
 import scala.collection.mutable.Queue
 import java.io.File
 
-case class MergeRequest(fileName1: String, fileName2: String)
+case class MergeRequest(filename1: String, filename2: String)
 case class ChainRequest(range: KeyRange)
 
 class Manager(workers: Seq[Worker], range: KeyRange, outputFile: String) extends Actor {
@@ -14,8 +14,8 @@ class Manager(workers: Seq[Worker], range: KeyRange, outputFile: String) extends
 		workers.first ! ChainRequest(range)
 		
 		receive {
-			case ChainResult(fileName: String) =>
-				(new File(fileName)).renameTo(new File(outputFile))
+			case ChainResult(filename: String) =>
+				(new File(filename)).renameTo(new File(outputFile))
 		}
 		
 		exit()
