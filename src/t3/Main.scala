@@ -3,7 +3,7 @@ package t3
 import common._
 
 object Main {
-	private final val workerCount = 2
+	private final val workerCount = 4
 	
 	def main(args: Array[String]) {
 		if(args.length < 5) {
