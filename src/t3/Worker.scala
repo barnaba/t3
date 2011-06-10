@@ -6,7 +6,6 @@ case class Result(filename: String)
 
 class Worker extends DaemonActor {
 	def act() {
-    println("worker started")
 		loop {
 			react {
 				case MergeRequest(filename1: String, filename2: String) => {
