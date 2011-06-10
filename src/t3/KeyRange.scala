@@ -29,7 +29,7 @@ class KeyRange(alphabet:String, len:Int, range: Range) extends Iterator[String] 
     } else {
       howMany + current
     }
-    val r = new KeyRange(alphabet, len, current to end by range.step)
+    val r = new KeyRange(alphabet, len, range(current) to range(end-1) by range.step)
     current = end
     return r
   }

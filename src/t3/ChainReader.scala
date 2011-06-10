@@ -18,9 +18,13 @@ class ChainReader(filename: String) {
 		line != null
 	
 	def popMinimal(other: ChainReader): String =
-		if(this.line < other.line) this.pop else other.pop
+    if (this.hasNext && other.hasNext)
+      if(this.line < other.line) this.pop else other.pop
+    else 
+      (if (this.hasNext) this else other).pop
 	
-	def close {
+	def delete {
 		source.close
+    new java.io.File(filename).delete
 	}
 }

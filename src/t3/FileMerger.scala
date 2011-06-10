@@ -8,15 +8,11 @@ class FileMerger(filename1: String, filename2: String) {
 	val writer = new TempWriter
 	
 	writer.write() { stream =>
-		while(readers(0).hasNext && readers(1).hasNext)
-			writeLine(stream, readers(0).popMinimal(readers(1)))
-		
-		readers foreach { reader =>
-			if(reader.hasNext) writeLine(stream, reader.pop)
-		}
+		while(readers(0).hasNext || readers(1).hasNext)
+			writeLine(stream, readers(0) popMinimal readers(1))
 	}
 	
-	readers foreach { _.close }
+	readers foreach { _.delete }
 	
 	def writeLine(stream: BufferedOutputStream, line: String) {
 		stream.write((line + "\n").getBytes)
