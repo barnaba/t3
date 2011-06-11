@@ -10,17 +10,24 @@ class RainbowTable (rainbowFile: String, keyLength: Int){
     val chains = (file.length / bytesPerChain).toLong
   val stream = new java.io.FileInputStream(file)
 
-  def apply(key: Array[Byte]): Array[Byte] = {
+  def apply(key: Array[Byte]): List[Array[Byte]] = {
     val keyString = b2s(key)
     var low = 0L
     var high = chains - 1
-    bsearch(low, high, b2s(key))
+    val m = bsearch(low, high, keyString)
+    getConflicting(m, 1, keyString) ::: getConflicting(m, -1, keyString)
   }
 
-  def bsearch(low:Long, high:Long, keyString:String) : Array[Byte]= {
+  def getConflicting(index: Long, step:Int, keyString: String) : List[Array[Byte]]= {
+    if (index < 0 || index > chains || b2s(getNthChain(index)._2) != keyString )
+      Nil
+    else
+      getNthChain(index)._1 :: getConflicting(index+step, step, keyString)
+  }
+
+  def bsearch(low:Long, high:Long, keyString:String) : Long = {
     if (low > high)
-      return null
-    
+      return -1
     val mid = ((low+high)/2).toLong
     val midChain = getNthChain(mid)
     val midKeyString = b2s(midChain._2)
@@ -30,7 +37,7 @@ class RainbowTable (rainbowFile: String, keyLength: Int){
     else if (keyString > midKeyString)
       bsearch(mid+1, high, keyString)
     else{
-      return midChain._1
+      return mid
     }
   }
 

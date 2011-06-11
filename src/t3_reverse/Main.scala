@@ -12,7 +12,7 @@ object Main {
 
     val rainbowFile = args(0) + ".rt"
     val metadataFile = args(0) + ".rtm"
-    val hash = args(1).getBytes
+    val hash = org.apache.commons.codec.binary.Hex.decodeHex(args(1).toArray)
 
     val lines = scala.io.Source.fromFile(metadataFile).getLines.toArray
 
@@ -27,21 +27,19 @@ object Main {
     val redux = new MD5Redux(alphabet, keyLength)
     val table = new RainbowTable(rainbowFile, keyLength)
 
-    for (level <- 0 to chainLength) {
-      var key = redux(hash, chainLength - level)
-      for (i <- level-1 to 0 by -1){
-        val hash = MD5Hash(key)
-        key = redux(hash, chainLength -i)
+    for (level <- 1 to chainLength) {
+      Chain.length = chainLength
+      var key = redux(hash, level-1)
+      if (chainLength != level){
+        var chain = new Chain(key, level)
+        key = chain.last
       }
 
-      val first = table(key)
-      if (first != null){
-        for(i <- 0 to chainLength){
-          Chain.length = i
-          val c = new Chain(first)
-          if (table.b2s(MD5Hash(c.last)) == table.b2s(hash))
-            println("Znaleziony klucz to " + table.b2s(c.last))
-        }
+      val matching_firsts = table(key)
+      matching_firsts foreach { (first : Array[Byte]) =>
+              Chain.length = level - 1
+              val c = new Chain(first)
+              if (table.b2s(MD5Hash(c.last)) == table.b2s(hash))
       }
     }
   }

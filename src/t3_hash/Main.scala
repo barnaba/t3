@@ -11,6 +11,8 @@ object Main {
     }
 
     val key = args(0).getBytes
-    println(MD5Hash(key).map(_.toChar).mkString(""))
+    val hash = MD5Hash(key)
+    val hashText = org.apache.commons.codec.binary.Hex.encodeHex(hash)
+    println(hashText.mkString(""))
     }
 }

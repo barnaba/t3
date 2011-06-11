@@ -6,10 +6,12 @@ object Chain {
   var length: Int = _
 }
 
-class Chain(first: Array[Byte]) extends Ordered[Chain]{
+class Chain(first: Array[Byte], startPosition: Int) extends Ordered[Chain]{
 
   val last = element(first,0)
   val lastAsStr = last.map(_.toChar).mkString("")
+
+  def this(first: Array[Byte]) = this(first, 0)
 
   private def element(key:Array[Byte], n: Int) : Array[Byte] = {
       val hash = Chain.hash(key)
