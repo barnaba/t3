@@ -37,9 +37,13 @@ object Main {
 
       val matching_firsts = table(key)
       matching_firsts foreach { (first : Array[Byte]) =>
-              val c = new Chain(first, 0, level-1)
-              if (table.b2s(MD5Hash(c.last)) == table.b2s(hash))
+              for( i <- 0 to chainLength) {
+              val c = new Chain(first, 0, i)
+              if (table.b2s(MD5Hash(c.last)) == table.b2s(hash)){
                 println("Znaleziono klucz dla hasha " + args(1) + ": " + table.b2s(c.last))
+                exit()
+              }
+            }
       }
     }
   }
