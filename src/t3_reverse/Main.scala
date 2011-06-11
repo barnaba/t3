@@ -40,6 +40,7 @@ object Main {
               Chain.length = level - 1
               val c = new Chain(first)
               if (table.b2s(MD5Hash(c.last)) == table.b2s(hash))
+                println("Znaleziono klucz dla hasha " + args(1) + ": " + table.b2s(c.last))
       }
     }
   }
