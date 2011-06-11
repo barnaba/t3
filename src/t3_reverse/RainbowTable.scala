@@ -7,41 +7,47 @@ class RainbowTable (rainbowFile: String, keyLength: Int){
   val chain = new Chain(("a"*keyLength).getBytes)
     val bytesPerChain = chain.compact.length
   val file = new java.io.File(rainbowFile)
-    val chains = file.length / bytesPerChain
+    val chains = (file.length / bytesPerChain).toLong
   val stream = new java.io.FileInputStream(file)
 
   def apply(key: Array[Byte]): Array[Byte] = {
     val keyString = b2s(key)
-    var first = 0
-    var upto = chains
+    var low = 0L
+    var high = chains - 1
+    bsearch(low, high, b2s(key))
+  }
 
-    while (first < upto){
-      val mid = ((first + upto) / 2).toInt
-      val midChain = getNthChain(mid)
-      val midKey = midChain._2
+  def bsearch(low:Long, high:Long, keyString:String) : Array[Byte]= {
+    if (low > high)
+      return null
+    
+    val mid = ((low+high)/2).toLong
+    val midChain = getNthChain(mid)
+    val midKeyString = b2s(midChain._2)
 
-      if (keyString  < midKey)
-        upto = mid
-      else if (keyString > midKey)
-        first = mid
-      else
-        return midChain._1.getBytes
+    if (keyString < midKeyString)
+      bsearch(low, mid-1, keyString)
+    else if (keyString > midKeyString)
+      bsearch(mid+1, high, keyString)
+    else{
+      return midChain._1
     }
-    return "".getBytes
   }
 
   //This is useful in some other places (Chain), consider refactoring
   //byte array to string
   def b2s(bytes: Array[Byte]) = bytes.map(_.toChar).mkString("")
 
-  def getNthChain(n: Int) = {
-    val first = new Array[Byte](keyLength)
-    val last = new Array[Byte](keyLength)
+  def getNthChain(n: Long) = {
+    val chain = new Array[Byte](bytesPerChain)
 
-    stream.read(last, n*bytesPerChain, keyLength)
-    stream.read(first, n*bytesPerChain + keyLength + separatorLength, keyLength)
+    stream.skip(n.toLong*bytesPerChain)
+    stream.read(chain)
+    stream.skip(-(n+1).toLong*bytesPerChain)
+    val last = chain.slice(0, keyLength)
+    val first = chain.slice(keyLength + separatorLength, bytesPerChain-1) 
 
-    (b2s(first), b2s(last))
+    (first, last)
   }
 
 

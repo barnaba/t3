@@ -23,6 +23,7 @@ object Main {
     metadata.close
 		
 		val range = KeyRange(alphabet, keyLength, step);
+    println("Generujemy " + ((range.length / 1024)/1024)*2*keyLength+ " mega hashy")
 		
 		Chain.redux = new MD5Redux(alphabet, keyLength)
 		Chain.hash = MD5Hash
@@ -30,6 +31,7 @@ object Main {
 		
 		val workers: Seq[Worker] = (1 to workerCount) map { _ => new Worker() }
 		val manager = new Manager(workers, range, outputFile)
+
 		
 		workers foreach { _.start }
 		manager.start
