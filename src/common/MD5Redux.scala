@@ -11,12 +11,11 @@ class MD5Redux(alphabet: String, len: Int) extends ReduxFunction {
   def apply(input: Array[Byte], level: Int): Array[Byte] = {
       assert(input.length >= 16)
       val indices = new Array[Int](16)
-      for (i <- 0 to 15 by 4){
+      for (i <- 0 to 9 by 3){
           val h = (getInt(input.slice(i*4,(i+1)*4)) ^ (level << shift)).abs
           indices(i) = (h % math.pow(alen,2)) / alen
           indices(i+1) = (h % math.pow(alen,2)) % alen
           indices(i+2) = ((h / math.pow(alen,2)) % math.pow(alen,2)) / alen
-          indices(i+3) = ((h / math.pow(alen,2)) % math.pow(alen,2)) % alen
       }
       assert(indices.filter(_ > alen).length == 0)
       indices.slice(0,len).map(i => alphabet(i)).mkString("").getBytes()
