@@ -1,9 +1,9 @@
 package common
 
 object Chain {
-  var redux: ReduxFunction = _
-  var hash: HashFunction = _
-  var length: Int = _
+  var redux: ReduxFunction = null
+  var hash: HashFunction = null
+  var length: Int = 0
 }
 
 class Chain(first: Array[Byte], startPosition: Int, length: Int) extends Ordered[Chain]{
@@ -27,6 +27,6 @@ class Chain(first: Array[Byte], startPosition: Int, length: Int) extends Ordered
     lastAsStr compare that.lastAsStr
   }
 
-  def compact() : Array[Byte] = last ++ " ".getBytes ++ first ++ "\n".getBytes
+  def compact() : Array[Byte] = last ++ first ++ "\n".getBytes
 
 }

@@ -2,7 +2,7 @@ package t3_reverse
 import common._
 
 class RainbowTable (rainbowFile: String, keyLength: Int){
-  val separatorLength = 1
+  val separatorLength = 0
 
   val chain = new Chain(("a"*keyLength).getBytes)
     val bytesPerChain = chain.compact.length

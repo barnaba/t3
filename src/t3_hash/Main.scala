@@ -10,7 +10,7 @@ object Main {
       return
     }
 
-    val key = args(0).getBytes
+    val key = args(0).getBytes("ASCII")
     val hash = MD5Hash(key)
     val hashText = org.apache.commons.codec.binary.Hex.encodeHex(hash)
     println(hashText.mkString(""))
