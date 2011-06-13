@@ -18,6 +18,17 @@ object Main {
 		val outputFile = args(4) + ".rt"
     val metadataFile = args(4) + ".rtm"
 
+    val error = if (keyLength < 1) "keyLength too low"
+      else if (chainLength < 2) "chainLength too low"
+      else if (step < 1) "step too low"
+      else if (alphabet.length < 2) "alphabet to small"
+      else ""
+
+    if (error.length > 0){
+      println(error)
+      exit(1)
+    }
+
     val metadata = new java.io.PrintWriter(new java.io.File(metadataFile))
     metadata.write( args.mkString("\n" ))
     metadata.close

@@ -12,13 +12,39 @@ object Main {
 
     val rainbowFile = args(0) + ".rt"
     val metadataFile = args(0) + ".rtm"
-    val hash = org.apache.commons.codec.binary.Hex.decodeHex(args(1).toArray)
 
     val lines = scala.io.Source.fromFile(metadataFile).getLines.toArray
 
     val keyLength= lines(0).toInt
     val chainLength = lines(1).toInt
     val alphabet = lines(3)
+
+    val canRead= (new java.io.File(rainbowFile).canRead() && new java.io.File(metadataFile).canRead())
+
+    val tableError = if (keyLength < 1) "keyLength too low"
+      else if (chainLength < 2) "chainLength too low"
+      else if (alphabet.length < 2) "alphabet to small"
+      else ""
+
+    val argError = if (! canRead) "can't read provided file"
+      else if (args(1).length != 32) "provided hash is too short"
+      else ""
+
+    if (argError.length > 0){
+      println(argError)
+      exit(1)
+    }
+
+    if (tableError.length > 0){
+      println("Problem with your table file: " + tableError)
+      exit(1)
+    }
+
+
+    val hash = org.apache.commons.codec.binary.Hex.decodeHex(args(1).toArray)
+
+
+
 
 		Chain.redux = new MD5Redux(alphabet, keyLength)
 		Chain.hash = MD5Hash
